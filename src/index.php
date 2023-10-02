@@ -1,34 +1,67 @@
 <?php
-$numero1 = 2;
-$numero2 = 2;
-    $MENSAJE = "hola a mi sí me va jajaj salu2";
-    $EMOTICONO= "👌🏻";
-    echo $MENSAJE." ".$EMOTICONO." ".($numero1+$numero2);
-    echo "</br>";
-    echo "El increiblemente resultado de la suma espectacular es ".$numero1+$numero2;
+
+const archive = '📁';
+const file = '📄';
+function listDirectories(string $userPath)
+{
+    $directories = scandir($userPath);
+    echo "<ul>";
+
+    foreach ($directories as $dir) {
+        if (is_dir($dir)) {
+            if ($dir == "." || $dir == "..") continue;
+            $customPath = $userPath . "/ $dir";
+            echo "<li>" . archive . " $dir </li>";
+
+            listDirectories($userPath . $dir);
+        } else {
+            $filePath = $userPath . "/" . $dir;
+            if ($dir == "index.php") continue;
+            echo "<li> <a href='$filePath'>" . file . "  $dir </a></li>";
+        }
+    }
+    echo "</ul>";
+}
+
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de ejercicios</title>
+    <style>
+        :root {
+            --text-color: #fbfbfe;
+        }
 
+        body {
+            display: grid;
+            place-items: center;
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #2b2a33;
+            color: var(--text-color);
 
-a. 17.45.222.45
-Clase: C
-Máscara: 255.255.255.0
+            & ul {
+                list-style: none;
 
-b. 155.25.169.227
-Clase: B
-Máscara: 255.255.255.0
+                & li {
+                    padding-bottom: 10px;
+                }
+            }
 
-c. 195.0.21.98
-Clase: A
-Máscara: 255.0.0.0
+            & a:link,
+            a:visited {
+                color: var(--text-color);
+                text-decoration: none;
+            }
 
-d. 55.250.5.5
-Clase: D
-Máscara: No tiene
-
-e. 148.17.9.155
-Clase: B
-Máscara: 255.255.255.0
-
-f. 223.250.200.222
-Clase: C
-Máscara: 255.255.255.0
+        }
+    </style>
+</head>
+<body>
+<?= listDirectories("./"); ?>
+</body>
