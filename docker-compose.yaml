@@ -4,7 +4,7 @@ services:
   nginx:
     image: nginx:1.25.2
     ports:
-      - 8081:80
+      - 80:80
     volumes:
       - ./src:/var/www/php
       - ./.config/docker/nginx/conf.d:/etc/nginx/conf.d # cargamos la configuración de un fichero externo

@@ -6,17 +6,15 @@ function listDirectories(string $userPath)
 {
     $directories = scandir($userPath);
     echo "<ul>";
-
     foreach ($directories as $dir) {
         if (is_dir($dir)) {
             if ($dir == "." || $dir == "..") continue;
             $customPath = $userPath . "/ $dir";
             echo "<li>" . archive . " $dir </li>";
 
-            listDirectories($userPath . $dir);
+            listDirectories($dir);
         } else {
             $filePath = $userPath . "/" . $dir;
-            if ($dir == "index.php") continue;
             echo "<li> <a href='$filePath'>" . file . "  $dir </a></li>";
         }
     }
