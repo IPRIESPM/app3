@@ -50,8 +50,13 @@ $comidas = [
         $menu['bebidas']['vino'],
         $menu['bebidas']['Pinya-colada'],
     ],
-    'platos' => [$menu['platos']['tostada'],
+    'platos' => [
         $menu['platos']['pizza'],
+        $menu['platos']['bravas'],
+        $menu['platos']['kebab'],
+        $menu['platos']['Calamares-Romana'],
+        $menu['platos']['Croquetas'],
+        $menu['platos']['Ensaladilla'],
     ],
     'postres' => [
         $menu['postres']['tarta-queso'],

@@ -1,27 +1,11 @@
 <?php
 function generateRandomBill($amount)
 {
-    $dishes = round($amount * 0.7, 2);
-    $drinks = round($amount * 0.2, 2);
-    $desserts = round($amount * 0.1, 2);
-    return ['dishes' => $dishes, 'drinks' => $drinks, 'desserts' => $desserts];
-}
-
-function prepareOrder($amount, $menu)
-{
-    $dishes = $amount["dishes"];
-    $drinks = $amount["drinks"];
-    $desserts = $amount["desserts"];
-
-    $menu = $menu == "breakfast" ? "Desayuno" : $menu;
-    $menu = $menu == "lunch" ? "Comida" : $menu;
-    $menu = $menu == "dessert" ? "Postre" : $menu;
-
-    echo " Menú selecionado: $menu.";
-    echo "<p> Platos: $dishes €<br> Bebidas: $drinks € <br> Postres: $desserts €";
-    echo "<p>";
-
-    return ["dishes" => $dishes, "drinks" => $drinks, "desserts" => $desserts];
+    return [
+        'dishes' => round($amount * 0.7, 2),
+        'drinks' => round($amount * 0.2, 2),
+        'desserts' => round($amount * 0.1, 2)
+    ];
 }
 
 function generateProducts($type, $amount, $menu)
@@ -34,11 +18,9 @@ function generateProducts($type, $amount, $menu)
         $precio = $menu[$type][$random_element]['precio'];
 
         if (isset($total_of_elements[$nombre])) {
-            // Si la bebida ya existe, incrementa la cantidad y recalcula el total
             $total_of_elements[$nombre]["cantidad"] += 1;
             $total_of_elements[$nombre]["total"] += $precio;
         } else {
-            // Si la bebida no existe, añade una nueva entrada
             $total_of_elements[$nombre] = [
                 "nombre" => $nombre,
                 "cantidad" => 1,
@@ -47,22 +29,54 @@ function generateProducts($type, $amount, $menu)
         }
 
         $total_of_generate += $precio;
-
-        // Si ya hemos superado el monto, sal del bucle
-        if ($total_of_generate > $amount) {
-            foreach ($total_of_elements as $element) {
-                echo "{$element['nombre']} - Cantidad: {$element['cantidad']} - Total: {$element['total']} €<br>";
-            }
-            break;
-        }
-
-
     }
-    $type = $type == "drinks" ? "Bebidas" : $type;
-    $type = $type == "dishes" ? "Platos" : $type;
-    $type = $type == "desserts" ? "Postres" : $type;
-
-    echo "<p>Total de $type : $total_of_generate €</p>";
 
     return ["elementos" => $total_of_elements, "total" => $total_of_generate];
+}
+
+function printSection($title, $data, $lineWidth, $frame, $widthNombre, $widthCantidad, $widthTotal)
+{
+    $titleFormatted = sprintf("  [%s] ", $title);
+    echo $frame . str_pad($titleFormatted, $lineWidth + 1, " ", STR_PAD_RIGHT) . $frame . "\r";
+    foreach ($data['elementos'] as $element) {
+        $formatted = sprintf("  %-{$widthNombre}s %{$widthCantidad}d %{$widthTotal}.2f € ",
+            $element['nombre'],
+            $element['cantidad'],
+            $element['total']);
+        echo $frame . str_pad($formatted, $lineWidth, " ", STR_PAD_RIGHT) . $frame . "\r";
+    }
+    echo "***** ------------------------------------  *****\r";
+}
+
+function printTicket($totalDrinks, $totalDishes, $totalDesserts)
+{
+    $lineWidth = 38;
+    $widthNombre = 22;
+    $widthCantidad = 2;
+    $widthTotal = 8;
+    $frame = "*****";
+
+    echo "<pre>
+*************************************************
+*************************************************
+*****            Bar Tanuki                 *****
+*****          Av. mapaches, 25             *****
+*****                                       *****
+*****  Concepto              Uds    Total   *****
+*****  -----------------------------------  *****\r";
+
+    printSection('Bebidas', $totalDrinks, $lineWidth, $frame, $widthNombre, $widthCantidad, $widthTotal);
+    printSection('Platos', $totalDishes, $lineWidth, $frame, $widthNombre, $widthCantidad, $widthTotal);
+    printSection('Postres', $totalDesserts, $lineWidth, $frame, $widthNombre, $widthCantidad, $widthTotal);
+
+    $totalAmount = $totalDrinks['total'] + $totalDishes['total'] + $totalDesserts['total'];
+    $formattedTotal = sprintf("  Total: %-{$widthTotal}.2f €   ", $totalAmount);
+    echo $frame . str_pad($formattedTotal, $lineWidth + 3, " ", STR_PAD_RIGHT) . $frame . "\r";
+
+    echo "*****                                       *****
+***** La atendió Mariano                    *****
+***** Gracias por su visita                 *****
+*************************************************
+*************************************************
+</pre>";
 }
